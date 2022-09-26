@@ -10,10 +10,11 @@ export const GalleryLink = styled.a`
 	transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 	:hover,
 	:focus {
-		transform: scale(1.03);
+		transform: scale(1.3);
 	}
 `;
-export const GalleryImage = styled.image`
+export const GalleryImage = styled.img`
+	display: block;
 	:hover {
 		cursor: zoom-in;
 	}
