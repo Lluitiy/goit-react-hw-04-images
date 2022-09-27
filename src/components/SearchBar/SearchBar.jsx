@@ -1,11 +1,12 @@
 import { Component } from 'react';
-import { RiSearchLine } from 'react-icons/ri';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import {
 	Header,
 	SearchForm,
 	SearchFormButton,
 	SearchFormInput,
+	SearchIcon,
 } from './SearchBar.styled';
 
 export class SearchBar extends Component {
@@ -38,10 +39,14 @@ export class SearchBar extends Component {
 						onChange={this.handleChange}
 					/>
 					<SearchFormButton type="submit">
-						<RiSearchLine />
+						<SearchIcon />
 					</SearchFormButton>
 				</SearchForm>
 			</Header>
 		);
 	}
 }
+
+SearchBar.propTypes = {
+	onSubmit: PropTypes.func.isRequired,
+};

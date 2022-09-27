@@ -2,20 +2,16 @@ import styled from '@emotion/styled';
 
 export const GalleryItem = styled.li`
 	border-radius: 2px;
-	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-		0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+	border: 0.5px solid black;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+		rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 `;
 
-export const GalleryLink = styled.a`
-	transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
-	:hover,
-	:focus {
-		transform: scale(1.3);
-	}
-`;
 export const GalleryImage = styled.img`
 	display: block;
+	transition: 250ms transform ease-in-out;
 	:hover {
+		transform: scale(1.05);
 		cursor: zoom-in;
 	}
 `;
