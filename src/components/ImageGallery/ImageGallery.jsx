@@ -5,6 +5,6 @@ export const ImageGallery = ({ children }) => {
 	return <ImageGalleryList>{children}</ImageGalleryList>;
 };
 
-ImageGallery.prototypes = {
+ImageGallery.propTypes = {
 	children: PropTypes.node.isRequired,
 };
