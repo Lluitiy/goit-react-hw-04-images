@@ -38,7 +38,14 @@ export class ImageGalleryItem extends Component {
 								: images.hits,
 						status: 'resolved',
 					});
-				});
+				})
+				.finally(() =>
+					setTimeout(() => {
+						if (this.state.page > 1) {
+							this.onScroll();
+						}
+					}, 400)
+				);
 		}
 	}
 
@@ -53,16 +60,11 @@ export class ImageGalleryItem extends Component {
 		this.setState(prevState => ({
 			page: prevState.page + 1,
 		}));
-		this.onScroll();
 	};
 
 	onScroll = () => {
-		const { height: cardHeight } = document
-			.querySelector('ul')
-			.firstElementChild.getBoundingClientRect();
-
 		window.scrollBy({
-			top: cardHeight * 2,
+			top: window.innerHeight,
 			behavior: 'smooth',
 		});
 	};
