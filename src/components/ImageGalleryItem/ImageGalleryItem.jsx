@@ -18,10 +18,10 @@ export class ImageGalleryItem extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		const prevName = prevProps.pictureName;
 		const nextName = this.props.pictureName;
-		if (prevName !== nextName || prevState.page !== this.state.page) {
+		if (prevName !== nextName || prevProps.page !== this.props.page) {
 			this.setState({ status: 'pending' });
 			fetch(
-				`https://pixabay.com/api/?key=30188336-4b4f26bd7e50c24034d7e6b40&q=${nextName}&page=${this.state.page}&per_page=20`
+				`https://pixabay.com/api/?key=30188336-4b4f26bd7e50c24034d7e6b40&q=${nextName}&page=${this.props.page}&per_page=20`
 			)
 				.then(r => r.json())
 				.then(images => {
@@ -33,7 +33,7 @@ export class ImageGalleryItem extends Component {
 					}
 					this.setState({
 						picture:
-							this.state.page > 1
+							this.props.page > 1
 								? [...this.state.picture, ...images.hits]
 								: images.hits,
 						status: 'resolved',
@@ -41,7 +41,7 @@ export class ImageGalleryItem extends Component {
 				})
 				.finally(() =>
 					setTimeout(() => {
-						if (this.state.page > 1) {
+						if (this.props.page > 1) {
 							this.onScroll();
 						}
 					}, 400)
@@ -53,12 +53,6 @@ export class ImageGalleryItem extends Component {
 		this.setState(({ showModal }) => ({
 			showModal: !showModal,
 			modalPicture: URL,
-		}));
-	};
-	handleLoadMore = () => {
-		console.log('click click');
-		this.setState(prevState => ({
-			page: prevState.page + 1,
 		}));
 	};
 
@@ -89,7 +83,7 @@ export class ImageGalleryItem extends Component {
 				</Container>
 				{markUp}
 				{this.state.picture.length ? (
-					<LoadMoreBtn onClick={this.handleLoadMore} />
+					<LoadMoreBtn onClick={this.props.handleLoadMore} />
 				) : null}
 				{showModal && (
 					<Modal

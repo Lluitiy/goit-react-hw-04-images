@@ -9,19 +9,29 @@ import 'react-toastify/dist/ReactToastify.css';
 export class App extends Component {
 	state = {
 		pictureName: '',
+		page: 1,
 	};
 
 	handleFormSubmit = pictureName => {
-		this.setState({ pictureName });
+		this.setState({ pictureName, page: 1 });
 	};
-
+	handleLoadMore = () => {
+		console.log('click click');
+		this.setState(prevState => ({
+			page: prevState.page + 1,
+		}));
+	};
 	render() {
 		return (
 			<>
 				<SearchBar onSubmit={this.handleFormSubmit} />
 				<Container>
 					<ImageGallery>
-						<ImageGalleryItem pictureName={this.state.pictureName} />
+						<ImageGalleryItem
+							pictureName={this.state.pictureName}
+							page={this.state.page}
+							handleLoadMore={this.handleLoadMore}
+						/>
 					</ImageGallery>
 					<ToastContainer autoClose={3000} position={'top-left'} />
 				</Container>
