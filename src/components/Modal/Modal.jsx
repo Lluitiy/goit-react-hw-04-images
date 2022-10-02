@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { Overlay, ModalImg } from './Modal.styled';
@@ -6,31 +6,24 @@ import { Overlay, ModalImg } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
 const galleryBody = document.querySelector('body');
 
-export class Modal extends Component {
-	componentDidMount() {
-		galleryBody.classList.add('stop-scroll');
-		window.addEventListener('keydown', this.handleKeyDown);
-	}
-	componentWillUnmount() {
-		galleryBody.classList.remove('stop-scroll');
-		window.removeEventListener('keydown', this.handleKeyDown);
-	}
+export const Modal = ({ onClose, largeImage }) => {
+	useEffect(() => {
+		galleryBody.classList.toggle('stop-scroll');
+		window.addEventListener('keydown', e => {
+			if (e.code === 'Escape') {
+				console.log('first');
+				onClose();
+			}
+		});
+	}, [onClose]);
 
-	handleKeyDown = e => {
-		if (e.code === 'Escape') {
-			console.log('first');
-			this.props.onClose();
-		}
-	};
-	render() {
-		return createPortal(
-			<Overlay onClick={this.props.onClose}>
-				<ModalImg src={this.props.largeImage} alt="" width="900" height="700" />
-			</Overlay>,
-			modalRoot
-		);
-	}
-}
+	return createPortal(
+		<Overlay onClick={onClose}>
+			<ModalImg src={largeImage} alt="" width="900" height="700" />
+		</Overlay>,
+		modalRoot
+	);
+};
 
 Modal.propTypes = {
 	onClose: PropTypes.func.isRequired,

@@ -1,101 +1,83 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
 import { Spinner } from 'components/Spinner/Spinner';
 import { Modal } from 'components/Modal/Modal';
 import { LoadMoreBtn } from 'components/LoadMoreBtn/LoadMoreBtn';
 import { Container } from 'components/App/App.styled';
 import { GalleryItem, GalleryImage } from './ImageGalleryItem.styled';
 
-export class ImageGalleryItem extends Component {
-	state = {
-		picture: [],
-		status: 'idle',
-		showModal: false,
-		modalPicture: null,
-		page: 1,
-	};
-	componentDidUpdate(prevProps, prevState) {
-		const prevName = prevProps.pictureName;
-		const nextName = this.props.pictureName;
-		if (prevName !== nextName || prevProps.page !== this.props.page) {
-			this.setState({ status: 'pending' });
-			fetch(
-				`https://pixabay.com/api/?key=30188336-4b4f26bd7e50c24034d7e6b40&q=${nextName}&page=${this.props.page}&per_page=20`
-			)
-				.then(r => r.json())
-				.then(images => {
-					if (!images.hits.length) {
-						toast('unfortunately there are no images with such query');
-						this.setState({ status: 'idle' });
-						this.setState({ picture: [] });
-						return;
+const Status = {
+	IDLE: 'idle',
+	PENDING: 'pending',
+	RESOLVED: 'resolved',
+};
+
+export const ImageGalleryItem = props => {
+	const { pictureName, page, handleLoadMore } = props;
+	const [picture, setPicture] = useState([]);
+	const [status, setStatus] = useState(Status.IDLE);
+	const [showModal, setShowModal] = useState(false);
+	const [modalPicture, setModalPicture] = useState(null);
+	useEffect(() => {
+		setStatus(Status.PENDING);
+		fetch(
+			`https://pixabay.com/api/?key=30188336-4b4f26bd7e50c24034d7e6b40&q=${pictureName}&page=${page}&per_page=20`
+		)
+			.then(r => r.json())
+			.then(images => {
+				if (pictureName === '') {
+					setStatus(Status.IDLE);
+					return;
+				}
+				setPicture(prevImg => [...prevImg, ...images.hits]);
+
+				setTimeout(() => {
+					if (page > 1) {
+						onScroll();
 					}
-					this.setState({
-						picture:
-							this.props.page > 1
-								? [...this.state.picture, ...images.hits]
-								: images.hits,
-						status: 'resolved',
-					});
-				})
-				.finally(() =>
-					setTimeout(() => {
-						if (this.props.page > 1) {
-							this.onScroll();
-						}
-					}, 400)
-				);
-		}
-	}
+				}, 400);
+				setStatus(Status.RESOLVED);
+			})
+			.catch(error => console.log(error));
+	}, [pictureName, page]);
 
-	toggleModal = URL => {
-		this.setState(({ showModal }) => ({
-			showModal: !showModal,
-			modalPicture: URL,
-		}));
+	const toggleModal = URL => {
+		setShowModal(!showModal);
+		setModalPicture(URL);
 	};
 
-	onScroll = () => {
+	const onScroll = () => {
 		window.scrollBy({
 			top: window.innerHeight,
 			behavior: 'smooth',
 		});
 	};
-	render() {
-		const { picture, status, showModal } = this.state;
-		const markUp = picture?.map(({ tags, largeImageURL }) => (
-			<GalleryItem key={largeImageURL}>
-				<GalleryImage
-					src={largeImageURL}
-					alt={tags}
-					width="280"
-					height="260"
-					onClick={() => this.toggleModal(largeImageURL)}
-				/>
-			</GalleryItem>
-		));
-		return (
-			<>
-				<Container>
-					{status === 'idle' && <h1>Please enter the search query</h1>}
-					{status === 'pending' && <Spinner />}
-				</Container>
-				{markUp}
-				{this.state.picture.length ? (
-					<LoadMoreBtn onClick={this.props.handleLoadMore} />
-				) : null}
-				{showModal && (
-					<Modal
-						onClose={this.toggleModal}
-						largeImage={this.state.modalPicture}
-					/>
-				)}
-			</>
-		);
-	}
-}
+	const markUp = picture?.map(({ tags, largeImageURL }) => (
+		<GalleryItem key={largeImageURL}>
+			<GalleryImage
+				src={largeImageURL}
+				alt={tags}
+				width="280"
+				height="260"
+				onClick={() => toggleModal(largeImageURL)}
+			/>
+		</GalleryItem>
+	));
+	return (
+		<>
+			<Container>
+				{status === 'idle' && <h1>Please enter the search query</h1>}
+				{status === 'pending' && <Spinner />}
+			</Container>
+			{markUp}
+			{picture.length ? <LoadMoreBtn onClick={handleLoadMore} /> : null}
+			{showModal && <Modal onClose={toggleModal} largeImage={modalPicture} />}
+		</>
+	);
+};
 
 ImageGalleryItem.propTypes = {
 	pictureName: PropTypes.string.isRequired,
+	page: PropTypes.number.isRequired,
+	handleLoadMore: PropTypes.func.isRequired,
 };
