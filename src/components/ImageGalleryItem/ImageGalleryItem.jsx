@@ -29,7 +29,9 @@ export const ImageGalleryItem = props => {
 					setStatus(Status.IDLE);
 					return;
 				}
-				setPicture(prevImg => [...prevImg, ...images.hits]);
+				page > 1
+					? setPicture(prevImg => [...prevImg, ...images.hits])
+					: setPicture([...images.hits]);
 
 				setTimeout(() => {
 					if (page > 1) {

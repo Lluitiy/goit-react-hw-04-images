@@ -8,11 +8,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const App = () => {
 	const [pictureName, setPictureName] = useState('');
+	const [page, setPage] = useState(1);
+
 	const handleFormSubmit = pictureName => {
 		setPictureName(pictureName);
 		setPage(page);
 	};
-	const [page, setPage] = useState(1);
+
 	const handleLoadMore = () => {
 		console.log('first');
 		setPage(page + 1);
