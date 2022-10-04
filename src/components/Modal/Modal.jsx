@@ -9,12 +9,15 @@ const galleryBody = document.querySelector('body');
 export const Modal = ({ onClose, largeImage }) => {
 	useEffect(() => {
 		galleryBody.classList.toggle('stop-scroll');
-		window.addEventListener('keydown', e => {
+		const handleKeyDown = e => {
 			if (e.code === 'Escape') {
-				console.log('first');
 				onClose();
 			}
-		});
+		};
+		window.addEventListener('keydown', handleKeyDown);
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
 	}, [onClose]);
 
 	return createPortal(

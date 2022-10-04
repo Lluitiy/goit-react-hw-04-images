@@ -31,7 +31,7 @@ export const ImageGalleryItem = props => {
 				}
 				page > 1
 					? setPicture(prevImg => [...prevImg, ...images.hits])
-					: setPicture([...images.hits]);
+					: setPicture(images.hits);
 
 				setTimeout(() => {
 					if (page > 1) {

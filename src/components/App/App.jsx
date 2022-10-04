@@ -12,12 +12,11 @@ export const App = () => {
 
 	const handleFormSubmit = pictureName => {
 		setPictureName(pictureName);
-		setPage(page);
+		setPage(1);
 	};
 
 	const handleLoadMore = () => {
-		console.log('first');
-		setPage(page + 1);
+		setPage(pPage => pPage + 1);
 	};
 
 	return (
